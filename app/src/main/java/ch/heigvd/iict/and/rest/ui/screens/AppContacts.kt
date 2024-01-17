@@ -27,10 +27,11 @@ import ch.heigvd.iict.and.rest.viewmodels.ContactsViewModelFactory
 fun AppContact(application: ContactsApplication, contactsViewModel : ContactsViewModel = viewModel(factory= ContactsViewModelFactory(application))) {
     val context = LocalContext.current
     val contacts : List<Contact> by contactsViewModel.allContacts.observeAsState(initial = emptyList())
+    val selectedContact : Contact? by contactsViewModel.selectedContact.observeAsState(initial = null)
+
     // create a mutable state to store if the user is currently editing a contact with a boolean
     // set it to false by default
     var editionMode by rememberSaveable { mutableStateOf(false) };
-    var contact by remember { mutableStateOf<Contact?>(null) };
     Scaffold(
         topBar = {
             TopAppBar(
@@ -60,7 +61,7 @@ fun AppContact(application: ContactsApplication, contactsViewModel : ContactsVie
             if (!editionMode) {
                 FloatingActionButton(onClick = {
                     editionMode = true;
-                    contact = null;
+                    contactsViewModel.selectContact(null);
                 }){
                     Icon(Icons.Default.Add, contentDescription = null)
                 }
@@ -70,11 +71,11 @@ fun AppContact(application: ContactsApplication, contactsViewModel : ContactsVie
     { padding ->
         Column(modifier = Modifier.padding(padding)) {
             if (editionMode) {
-                ScreenContactEditor(contact);
+                ScreenContactEditor(selectedContact);
             } else {
                 ScreenContactList(contacts) { selectedContact ->
                     editionMode = !editionMode;
-                    contact = selectedContact;
+                    contactsViewModel.selectContact(selectedContact);
                 }
             }
         }

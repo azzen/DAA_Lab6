@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import java.util.*
 
 @Entity
-data class Contact(@PrimaryKey(autoGenerate = true) var id: Long? = null,
+data class Contact(@PrimaryKey(autoGenerate = true) var id: Long? = null, var remoteId: Long, var status: String,
               var name: String,
               var firstname: String?,
               var birthday : Calendar?,
